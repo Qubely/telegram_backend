@@ -35,5 +35,5 @@ class Remote:
         return client
 
     @staticmethod
-    def api():
-        print("ok")
+    def qr_client(auth_id):
+        return TelegramClient(f"qr_{auth_id}", Remote.API_ID, Remote.API_HASH)

@@ -1,6 +1,8 @@
 import base64
 import os
+import json, time, os, asyncio, threading
 from datetime import datetime
+bg_loop = asyncio.new_event_loop()
 class Helper : 
     def make_json_safe(obj):
         if isinstance(obj, dict):
@@ -33,4 +35,14 @@ class Helper :
         
     def short_text(text, max_len=30):
         return text if len(text) <= max_len else text[:max_len] + "..."
+    
+    
+
+    def start_loop():
+        asyncio.set_event_loop(bg_loop)
+        bg_loop.run_forever()
+    threading.Thread(target=start_loop, daemon=True).start()
+
+    def schedule_coro(coro):
+        return asyncio.run_coroutine_threadsafe(coro, bg_loop)
 
