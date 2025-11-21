@@ -1,0 +1,6 @@
+Flask
+flask-sock
+telethon
+pymongo
+cryptg
+asgiref
