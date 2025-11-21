@@ -7,7 +7,7 @@ import base64
 from flask import url_for
 from src.Classes.Helper import Helper
 import os
-TELEGRAM_DEFAULT_AVATAR = "https://t.me/i/userpic/320x320/1.png"
+TELEGRAM_DEFAULT_AVATAR = "https://telegram.org/img/t_logo.png"
 UPLOAD_DIR = "static/chat_avatars"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
@@ -77,19 +77,19 @@ class ChatListController:
         }
 
     async def chat_avatar(client, chat):
-        if getattr(chat, 'photo', None):
-            try:
-                file_name = f"{chat.id}.jpg"
-                file_path = os.path.join(UPLOAD_DIR, file_name)
-                if not os.path.isfile(file_path):
-                    await client.download_profile_photo(chat, file=file_path)
-                avatar_url = url_for('static', filename=f"chat_avatars/{file_name}", _external=True)
-                return avatar_url
-            except:
-                return TELEGRAM_DEFAULT_AVATAR
-        else:
+        try:
+            file_name = f"{chat.id}.jpg"
+            file_path = os.path.join(UPLOAD_DIR, file_name)
+            if os.path.isfile(file_path):
+                return url_for('static', filename=f"chat_avatars/{file_name}", _external=True)
+            if getattr(chat, 'photo', None):
+                await client.download_profile_photo(chat, file=file_path)
+                if os.path.isfile(file_path):
+                    return url_for('static', filename=f"chat_avatars/{file_name}", _external=True)
             return TELEGRAM_DEFAULT_AVATAR
-        
+        except Exception:
+            return TELEGRAM_DEFAULT_AVATAR
+
         
     @staticmethod
     def chat_title(chat):
