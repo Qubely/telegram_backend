@@ -20,13 +20,12 @@ class Helper :
     
     async def fetch_avatar_url(client,me):
         photos = await client.get_profile_photos(me.id, limit=1)
-        folder_path = "public/avatars"
-        os.makedirs(folder_path, exist_ok=True)
+        avatar_path = os.getenv("AVATAR_PATH", "/avatars")
+        os.makedirs(avatar_path, exist_ok=True)
         if photos:
-            file_path = f"{folder_path}/{me.id}.jpg"
+            file_path = f"{avatar_path}/{me.id}.jpg"
             await client.download_media(photos[0], file=file_path)
             base_url = os.getenv("APP_URL", "http://localhost:8000")
-            avatar_path = os.getenv("AVATAR_PATH", "/avatars")  # should match folder served by web server
             avatar_url = f"{base_url}{avatar_path}/{me.id}.jpg"
             return avatar_url
         else:
